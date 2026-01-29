@@ -17,7 +17,7 @@
     - description: 문제 주소 (option)
     - 터미널에서 작성법: 
     ```
-    git commit -m "[ADD] BOJ 1874 / Silver3" 
+    git commit -m "[ADD] BOJ 1874 / 스택 수열 /Silver3" 
     ```
     - 플랫폼 작성법 통일: 
         * [BOJ] - 백준 
