@@ -17,12 +17,12 @@
     - description: 문제 주소 (option)
     - 터미널에서 작성법: 
     ```
-    git commit -m "[ADD] BOJ 1874 / 스택 수열 /Silver3" 
+    git commit -m "[ADD] BOJ 1874 / 스택 수열 / Silver3" 
     ```
     - 플랫폼 작성법 통일: 
         * [BOJ] - 백준 
         * [PGS] - 프로그래머스
-        * [SEA] - 삼성SW Expert Academy     
+        * [SWEA] - 삼성SW Expert Academy     
       * [ETC] - 그외
 - ✅ [MOD] : 코드 및 내부 파일 수정
 - 🗑 [DEL] : 쓸모없는 코드나 파일 삭제
