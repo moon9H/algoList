@@ -1,5 +1,5 @@
 package APC;
-import java.util.Scanner;
+import java.io.*;
 import java.util.Stack;
 
 public class BOJ9012 {
@@ -9,25 +9,20 @@ public class BOJ9012 {
 			if (c == '('){
 				stack.push(c);
 			} else {
-				if (stack.isEmpty()){
-					return false;
-				} else {
-					stack.pop();
-				}
+				if (stack.isEmpty()) return false;
+				stack.pop();
 			}
 		}
 		return stack.isEmpty();
     }
-	public static void main(String[] args) {
-		Scanner sc = new Scanner(System.in);
-		int T = sc.nextInt();
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringBuilder sb = new StringBuilder();
+		int T = Integer.parseInt(br.readLine());
 		for (int i = 0; i < T; i++){
-			String parenthesis = sc.next();
-			if (isVPS(parenthesis)){
-				System.out.println("YES");
-			} else {
-				System.out.println("NO");
-			}
+			String parenthesis = br.readLine();
+			sb.append(isVPS(parenthesis) ? "YES" : "NO").append("\n");
 		}
+		System.out.println(sb.toString());
 	}
 }
