@@ -45,30 +45,32 @@ public class SWEA1767 {
         System.out.println(sb);
     }
  
-    static void setLine(int index, int connectedCount, int lineSum) {
-        if (index == corePos.size()) {
-            if (connectedCount > maxCore) {
-                maxCore = connectedCount;
+    static void setLine(int coreIdx, int connectedCore, int lineSum) {
+    	if (connectedCore + corePos.size() - coreIdx < maxCore) return;
+        
+    	if (coreIdx == corePos.size()) {
+            if (connectedCore > maxCore) {
+                maxCore = connectedCore;
                 minSum = lineSum;
-            } else if (connectedCount == maxCore) {
+            } else if (connectedCore == maxCore) {
                 minSum = Math.min(minSum, lineSum);
             }
             return;
         }
  
-        int[] cur = corePos.get(index);
+        int[] cur = corePos.get(coreIdx);
         int r = cur[0];
         int c = cur[1];
  
         for (int i = 0; i < 4; i++) {
             if (linePossible(r, c, i)) {
-                int dist = connect(r, c, i, true); 
-                setLine(index + 1, connectedCount + 1, lineSum + dist);
-                connect(r, c, i, false); 
+                int dist = connect(r, c, i, true);							// 해당 방향으로 전선 연결 가능
+                setLine(coreIdx + 1, connectedCore + 1, lineSum + dist);
+                connect(r, c, i, false); 									// 전선 연결 해제
             }
         }
  
-        setLine(index + 1, connectedCount, lineSum);
+        setLine(coreIdx + 1, connectedCore, lineSum);						// 전선을 연결할 수 없는 경우
     }
  
     static boolean linePossible(int curRow, int curCol, int dir) {
@@ -83,18 +85,17 @@ public class SWEA1767 {
         return true;
     }
  
-     
     static int connect(int curRow, int curCol, int dir, boolean state) {
         int nr = curRow + dirRow[dir];
         int nc = curCol + dirCol[dir];
-        int count = 0;
+        int lineLength = 0;
  
         while (nr >= 0 && nr < N && nc >= 0 && nc < N) {
             cantConnect[nr][nc] = state;
-            count++;
+            lineLength++;
             nr += dirRow[dir];
             nc += dirCol[dir];
         }
-        return count;
+        return lineLength;
     }
 }
