@@ -1,89 +1,106 @@
-import java.io.*;
-import java.util.*;
+package PrePareTest;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.StringTokenizer;
 
 public class BOJ17471 {
-    static int N;
-    static int[] pop;
-    static ArrayList<Integer>[] adj;
-
-    public static void main(String[] args) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine().trim());
-
-        pop = new int[N];
-        StringTokenizer st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) pop[i] = Integer.parseInt(st.nextToken());
-
-        adj = new ArrayList[N];
-        for (int i = 0; i < N; i++) adj[i] = new ArrayList<>();
-
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine());
-            int cnt = Integer.parseInt(st.nextToken());
-            for (int j = 0; j < cnt; j++) {
-                int v = Integer.parseInt(st.nextToken()) - 1;
-                adj[i].add(v);
-            }
-        }
-
-        int answer = Integer.MAX_VALUE;
-
-        // mask: A 구역(1), B 구역(0)
-        // 공집합(0) / 전체집합((1<<N)-1) 제외
-        for (int mask = 1; mask < (1 << N) - 1; mask++) {
-            // A, B 각각 연결인지 체크
-            if (!isConnected(mask, true)) continue;
-            if (!isConnected(mask, false)) continue;
-
-            int sumA = 0, sumB = 0;
-            for (int i = 0; i < N; i++) {
-                if ((mask & (1 << i)) != 0) sumA += pop[i];
-                else sumB += pop[i];
-            }
-            answer = Math.min(answer, Math.abs(sumA - sumB));
-        }
-
-        System.out.println(answer == Integer.MAX_VALUE ? -1 : answer);
-    }
-
-    static boolean isConnected(int mask, boolean inA) {
-        // 그룹에 속한 아무 노드나 start로 찾기
-        int start = -1;
-        int groupCount = 0;
-
-        for (int i = 0; i < N; i++) {
-            boolean isInGroup = inA ? ((mask & (1 << i)) != 0) : ((mask & (1 << i)) == 0);
-            if (isInGroup) {
-                groupCount++;
-                if (start == -1) start = i;
-            }
-        }
-
-        // 그룹이 비어있으면
-        if (groupCount == 0) return false;
-
-        boolean[] vis = new boolean[N];
-        ArrayDeque<Integer> q = new ArrayDeque<>();
-        vis[start] = true;
-        q.add(start);
-
-        int visitedCount = 1;
-
-        while (!q.isEmpty()) {
-            int cur = q.poll();
-
-            for (int nxt : adj[cur]) {
-                if (vis[nxt]) continue;
-
-                boolean nxtInGroup = inA ? ((mask & (1 << nxt)) != 0) : ((mask & (1 << nxt)) == 0);
-                if (!nxtInGroup) continue;
-
-                vis[nxt] = true;
-                visitedCount++;
-                q.add(nxt);
-            }
-        }
-
-        return visitedCount == groupCount;
-    }
+	private static int N, minDiff;
+	private static int[] population;
+	private static ArrayList<Integer>[] graph;
+	private static boolean[] selected;
+	public static void main(String[] args) throws IOException{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		N = Integer.parseInt(br.readLine());
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		population = new int[N + 1];
+		selected = new boolean[N + 1];
+		graph = new ArrayList[N + 1];
+		minDiff = Integer.MAX_VALUE;
+		for (int i = 0; i <= N; i++) {
+			graph[i] = new ArrayList<>();
+		}
+		for (int i = 1; i <= N; i++) {
+			population[i] = Integer.parseInt(st.nextToken());
+		}
+		
+		for (int i = 1; i <= N; i++) {
+			st = new StringTokenizer(br.readLine());
+			int M = Integer.parseInt(st.nextToken());
+			for (int j = 0; j < M; j++) {
+				graph[i].add(Integer.parseInt(st.nextToken()));
+			}
+		}
+		
+		dfs(0, 1);
+		
+		if (minDiff == Integer.MAX_VALUE) {
+			System.out.println(-1);
+		} else {
+			System.out.println(minDiff);			
+		}
+	}
+	
+	static void dfs(int count, int start) {
+		if (count > 0) {
+			ArrayList<Integer> groupA = new ArrayList<>();
+			ArrayList<Integer> groupB = new ArrayList<>();
+			for (int i = 1; i <= N; i++) {
+				if (selected[i]) groupA.add(i);
+				else groupB.add(i);
+			}
+			
+			boolean isAConnected = isConnected(groupA);
+			boolean isBConnected = isConnected(groupB);
+			
+			if (isAConnected && isBConnected) {
+				int aSum = 0, bSum = 0;
+				for (Integer integer : groupA) {
+					aSum += population[integer];
+				}
+				
+				for (Integer integer : groupB) {
+					bSum += population[integer];
+				}
+				
+				minDiff = Math.min(minDiff, Math.abs(aSum - bSum));
+			}
+		}
+		
+		if (count == N / 2) return;
+		
+		for (int i = start; i <= N; i++) {
+			selected[i] = true;
+			dfs(count + 1, i + 1);
+			selected[i] = false;
+		}
+	}
+	
+	static boolean isConnected(ArrayList<Integer> subgraph) {
+		boolean[] visited = new boolean[N + 1];
+		Queue<Integer> queue = new ArrayDeque<>();
+		queue.add(subgraph.get(0));
+		visited[subgraph.get(0)] = true;
+		
+		while(!queue.isEmpty()) {
+			int curNode = queue.poll();
+			
+			for (Integer integer : graph[curNode]) {
+				if (subgraph.contains(integer) && !visited[integer]) {
+					queue.add(integer);
+					visited[integer] = true;
+				}
+			}
+		}
+		
+		for (Integer integer : subgraph) {
+			if (!visited[integer]) return false;
+		}
+		
+		return true;
+	}
 }
