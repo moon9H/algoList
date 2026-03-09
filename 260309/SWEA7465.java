@@ -3,8 +3,6 @@ package Day14;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.StringTokenizer;
 
 public class SWEA7465 {
@@ -25,11 +23,11 @@ public class SWEA7465 {
 				int b = Integer.parseInt(st.nextToken());
 				union(a, b);				
 			}
-			Set<Integer> set = new HashSet<>();
+			int ans = 0;
 			for (int i = 1; i <= N; i++) {
-				set.add(findSet(i));
+				if (parents[i] == i) ++ans;
 			}
-			sb.append('#').append(tc).append(' ').append(set.size()).append('\n');
+			sb.append('#').append(tc).append(' ').append(ans).append('\n');
 		}
 		System.out.println(sb);
 	}
