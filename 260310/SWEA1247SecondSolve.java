@@ -1,12 +1,10 @@
-package Day15;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
-public class SWEA1247 {
+public class SWEA1247SecondSolve {
 	private static int N, homeRow, homeCol, companyRow, companyCol, minDist;
 	private static boolean[] selected;
 	private static ArrayList<Integer> ans;
